@@ -7,6 +7,7 @@ def solution(n):
 	primeIdx = [False] * 2 + [True] * (size-2)
 
 	res = ''
+	# pstringIdx keeps track of index in "concatenated string of primes"
 	pstringIdx = 0
 	for seive in range(2, size):
 		if not primeIdx[seive]: continue
@@ -16,6 +17,6 @@ def solution(n):
 			res += str(seive)[n - pstringIdx:]
 			if len(res) >= 5: break
 
-		# Update pstringIdx and primeIdx list given new prime seive
+		# Update primeIdx list given next prime seive
 		primeIdx[seive*2::seive] = [False] * len_range(seive * 2, size, seive)
 	return res[:5]

@@ -1,6 +1,6 @@
 from math import floor, ceil, sqrt
 
-s = input().strip().replace(" ", "")
+s = input().strip().replace(' ', '')
 n = sqrt(len(s))
 rows = floor(n)
 cols = ceil(n)
@@ -10,4 +10,4 @@ for col in range(cols):
     for idx in range(len(row_vec)):
         res[idx] += row_vec[idx]
 
-print(" ".join(res))
+print(' '.join(res))

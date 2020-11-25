@@ -1,6 +1,6 @@
 h, w = map(int, input().split())
 board = []
-sa = 0
+sa = 2 * h * w
 for row in range(h):
     board.append(list(map(int, input().strip().split())))
     for col in range(w):
@@ -9,5 +9,4 @@ for row in range(h):
         sa += n if col == 0 else abs(n - board[row][col - 1])
         if row == h-1: sa += n
         if col == w-1: sa += n
-        sa += 2
 print(sa)

@@ -6,8 +6,8 @@ rows = floor(n)
 cols = ceil(n)
 res = [''] * cols
 for col in range(cols):
-    row_vec = s[col * cols: (col + 1) * cols]
-    for idx in range(len(row_vec)):
-        res[idx] += row_vec[idx]
+    col_vec = s[col * cols: (col + 1) * cols]
+    for idx, c in enumerate(col_vec):
+        res[idx] += c
 
 print(' '.join(res))

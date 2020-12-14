@@ -6,7 +6,7 @@ int main() {
 	int n, score;
 
 	cin >> n;
-	vector <int> leaderboard;
+	vector<int> leaderboard;
 	for (int i=0; i<n; i++) {
 		cin >> score;
 		if (leaderboard.empty() || score != leaderboard.back())
@@ -14,7 +14,7 @@ int main() {
 	} // leaderboard now has no duplicates.
 
 	cin >> n;
-	vector <int> alice_scores(n);
+	vector<int> alice_scores(n);
 	for (int idx=0; idx<n; idx++) {
 		cin >> alice_scores[idx];
 	}

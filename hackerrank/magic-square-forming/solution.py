@@ -1,10 +1,10 @@
 from itertools import chain
 
-base = [[8, 3, 4], [1, 5, 9], [6, 7, 2]]
 
 def diff(test, square):
     return sum(abs(i - j) for i, j in zip(chain(*test), chain(*square)))
 
+base = [[8, 3, 4], [1, 5, 9], [6, 7, 2]]
 squares = []
 for _ in range(4):
     squares.append(base)

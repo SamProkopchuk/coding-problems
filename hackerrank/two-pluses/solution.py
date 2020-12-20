@@ -16,8 +16,8 @@ def largest_plus(matrix, row, col, roff=0, coff=0, dr=0, dc=0):
     if matrix[row][col] == 0:
         return 0
     elif dr or dc:
-        if not valid_idx(matrix, row + roff, col +
-                         coff) or matrix[row + roff][col + coff] == 0:
+        if (not valid_idx(matrix, row + roff, col + coff) or
+                matrix[row + roff][col + coff] == 0):
             return abs(roff + coff)  # One of them should be zero.
         return largest_plus(matrix, row, col, roff + dr, coff + dc, dr, dc)
     else:

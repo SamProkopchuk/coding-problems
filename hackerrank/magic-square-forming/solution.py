@@ -14,4 +14,4 @@ for _ in range(4):
 
 test = [tuple(map(int, input().strip().split())) for _ in range(3)]
 
-print(min(map(lambda sqr: diff(test, sqr), squares)))
+print(min(diff(test, sqr) for sqr in squares))

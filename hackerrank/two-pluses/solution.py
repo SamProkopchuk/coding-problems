@@ -1,5 +1,6 @@
-from itertools import chain, product
 from copy import deepcopy
+from itertools import chain
+from itertools import product
 
 
 def stoa(size):
@@ -20,10 +21,9 @@ def largest_plus(matrix, row, col, roff=0, coff=0, dr=0, dc=0):
             return abs(coff)
         return largest_plus(matrix, row, col, roff, coff + dc, dr, dc)
     directions = set()
-    for dr_ in (-1, 1):
-        directions.add(largest_plus(matrix, row, col, dr_, dc, dr_, dc))
-    for dc_ in (-1, 1):
-        directions.add(largest_plus(matrix, row, col, dr, dc_, dr, dc_))
+    for delta in (-1, 1):
+        directions.add(largest_plus(matrix, row, col, delta, dc, delta, dc))
+        directions.add(largest_plus(matrix, row, col, dr, delta, dr, delta))
     return min(directions)
 
 
@@ -32,10 +32,9 @@ def zero_out(matrix, row, col, dist, dr=0, dc=0):
         return
     elif dr == dc == 0:
         matrix[row][col] = 0
-        for dr_ in (-1, 1):
-            zero_out(matrix, row + dr_, col, dist-1, dr_, dc)
-        for dc_ in (-1, 1):
-            zero_out(matrix, row, col + dc_, dist-1, dr, dc_)
+        for delta in (-1, 1):
+            zero_out(matrix, row + delta, col, dist-1, delta, 0)
+            zero_out(matrix, row, col + delta, dist-1, 0, delta)
     else:
         matrix[row][col] = 0
         zero_out(matrix, row+dr, col+dc, dist-1, dr, dc)
@@ -46,7 +45,7 @@ def largest_bybase(lps, row, col):
     temp = deepcopy(lps)
     for size in range(1, lps[row][col] + 1):
         zero_out(temp, row, col, size)
-        tlps = [[largest_plus(temp, r, c) for c in range(m)] for r in range(n)]
+        tlps = [[largest_plus(temp, r, c) for c in range(len(temp[r]))] for r in range(len(temp))]
         largest = max(largest, stoa(size) * stoa(max(chain.from_iterable(tlps))))
     return largest
 

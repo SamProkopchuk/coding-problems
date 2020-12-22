@@ -1,2 +1,2 @@
 # CodingProblems
-Solutions to Coding Problems I Come Across
+Solutions to Coding Problems From Various Websites

@@ -26,6 +26,6 @@ fn main() {
         while !scores.is_empty() && scores.last().unwrap() <= &ascore {
             scores.pop();
         }
-        println!("{}", scores.len()+1);
+        println!("{}", scores.len() + 1);
     }
 }

@@ -1,16 +1,14 @@
-from sys import stdin, stdout
-
 for _ in range(int(input())):
-    word = stdin.readline().strip()
-    maxidx = -1
+    word = input()
+    previdx = -1
     for idx, c in reversed(list(enumerate(word))):
-        if c < word[maxidx]:
+        if c < word[previdx]:
             swapidx = word.rindex(min(filter(lambda c_: c_ > c, word[idx+1:])))
             wordl = list(word)
             wordl[idx], wordl[swapidx] = wordl[swapidx], wordl[idx]
             wordl[idx+1:] = sorted(wordl[idx+1:])
-            stdout.write(''.join(wordl) + '\n')
+            print(''.join(wordl))
             break
-        maxidx = idx
+        previdx = idx
     else:
-        stdout.write('no answer\n')
+        print('no answer')

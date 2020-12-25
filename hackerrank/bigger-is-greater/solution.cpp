@@ -5,10 +5,10 @@
 using namespace std;
 
 int main() {
-  int test, tests, idx, swapidx;
+  int tests, idx, swapidx;
   string s;
   cin >> tests;
-  for (test = 0; test < tests; test++) {
+  for (int test = 0; test < tests; test++) {
     s.clear();
     cin >> s;
     for (idx = s.length() - 1; idx > -1; idx--) {

@@ -9,25 +9,23 @@ fn main() {
         .trim()
         .split_whitespace()
         .map(|x| usize::from_str(x).unwrap());
-    let h = it.next().unwrap();
-    let w = it.next().unwrap();
+    let (h, w) = (it.next().unwrap(), it.next().unwrap());
 
-    let mut board = vec![vec![0; w]; h];
+    let mut board : Vec<Vec<i32>> = vec![];
     let mut sa = (2 * h * w) as i32;
     for row in 0..h {
         input.clear();
         io::stdin().read_line(&mut input).unwrap();
-        let mut it = input
+        board.push(input
             .trim()
             .split_whitespace()
-            .map(|x| i32::from_str(x).unwrap());
+            .map(|x| i32::from_str(x).unwrap())
+            .collect::<Vec<i32>>());
         for col in 0..w {
-            let v = it.next().unwrap();
-            board[row][col] = v;
-            sa += if row == 0 { v } else { (v - board[row - 1][col]).abs() };
-            sa += if col == 0 { v } else { (v - board[row][col - 1]).abs() };
-            if row == (h - 1) { sa += v };
-            if col == (w - 1) { sa += v };
+            sa += if row == 0 { board[row][col] } else { (board[row][col] - board[row - 1][col]).abs() };
+            sa += if col == 0 { board[row][col] } else { (board[row][col] - board[row][col - 1]).abs() };
+            if row == (h - 1) { sa += board[row][col] };
+            if col == (w - 1) { sa += board[row][col] };
         }
     }
     println!("{}", sa);

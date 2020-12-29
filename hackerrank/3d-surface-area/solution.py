@@ -1,7 +1,7 @@
 from itertools import product
 
 h, w = map(int, input().split())
-board = [list(map(int, input().strip().split())) for _ in range(h)]
+board = [list(map(int, input().split())) for _ in range(h)]
 sa = 2 * h * w
 for row, col in product(range(h), range(w)):
     n = board[row][col]

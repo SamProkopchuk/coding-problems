@@ -19,14 +19,10 @@ def wrap(idx2wrapper, m, n):
     res = [[None] * n for _ in range(m)]
     for edgedist in [*idx2wrapper.keys()]:
         it = iter(idx2wrapper[edgedist])
-        res[-1 - edgedist][edgedist:-edgedist] = list(islice(it, n - 2 * edgedist))
-        res = [list(r) for r in zip(*reversed(res))]
-        res[-1 - edgedist][1 + edgedist:-edgedist] = list(islice(it, m - 2 * edgedist - 1))
-        res = [list(r) for r in zip(*reversed(res))]
-        res[-1 - edgedist][1 + edgedist:-edgedist] = list(islice(it, n - 2 * edgedist - 1))
-        res = [list(r) for r in zip(*reversed(res))]
-        res[-1 - edgedist][1 + edgedist:-1 - edgedist] = list(islice(it, m - 2 * edgedist - 2))
-        res = [list(r) for r in zip(*reversed(res))]
+        for _ in range(4):
+            res[-1 - edgedist][edgedist:-edgedist-1] = list(islice(it, n - 2 * edgedist - 1))
+            res = [list(r) for r in zip(*reversed(res))]
+            m, n = n, m
     return res
 
 

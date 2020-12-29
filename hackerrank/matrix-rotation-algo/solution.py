@@ -15,10 +15,10 @@ def unwrap(matrix):
     return res
 
 
-def wrap(idx2wrapper, m, n):
+def wrap(dist2wrapper, m, n):
     res = [[None] * n for _ in range(m)]
-    for edgedist in [*idx2wrapper.keys()]:
-        it = iter(idx2wrapper[edgedist])
+    for edgedist in dist2wrapper:
+        it = iter(dist2wrapper[edgedist])
         for _ in range(4):
             res[-1 - edgedist][edgedist:-edgedist-1] = list(islice(it, n - 2 * edgedist - 1))
             res = [list(r) for r in zip(*reversed(res))]
@@ -29,10 +29,10 @@ def wrap(idx2wrapper, m, n):
 m, n, r = map(int, input().split())
 matrix = [tuple(map(int, input().split())) for _ in range(m)]
 
-idx2wrapper = unwrap(matrix)
-for iwrapper in idx2wrapper:
-    idx2wrapper[iwrapper].rotate(r)
-matrix = wrap(idx2wrapper, m, n)
+dist2wrapper = unwrap(matrix)
+for iwrapper in dist2wrapper:
+    dist2wrapper[iwrapper].rotate(r)
+matrix = wrap(dist2wrapper, m, n)
 
 for row in matrix:
     print(*row)

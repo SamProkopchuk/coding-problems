@@ -16,6 +16,31 @@ def binary_insertion_sort(lst: list) -> None:
         binary_insert(i-1, lst.pop(i))
 
 
+def merge_sort(lst: list):
+    if len(lst) > 1:
+        mid = len(lst) // 2
+        l, r = lst[:mid], lst[mid:]
+        merge_sort(l)
+        merge_sort(r)
+        i = li = ri = 0
+        while li < len(l) and ri < len(r):
+            if l[li] < r[ri]:
+                lst[i] = l[li]
+                li += 1
+            else:
+                lst[i] = r[ri]
+                ri += 1
+            i += 1
+        while li < len(l):
+            lst[i] = l[li]
+            li += 1
+            i += 1
+        while ri < len(r):
+            lst[i] = r[ri]
+            ri += 1
+            i += 1
+
+
 def qsort(lst: list, l=None, r=None) -> None:
     if l is None:
         l = 0
@@ -51,12 +76,12 @@ def main():
     for _ in range(5):
         lst = [*range(10)]
         shuffle(lst)
-        visual_test(qsort, lst)
+        visual_test(merge_sort, lst)
 
     print(f'{"10 Random Integers [0, 10)":-^{40}}')
     for _ in range(10):
         lst = [randint(0, 9) for _ in range(10)]
-        visual_test(binary_insertion_sort, lst)
+        visual_test(merge_sort, lst)
 
 
 if __name__ == '__main__':

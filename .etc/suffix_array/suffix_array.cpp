@@ -33,11 +33,10 @@ vector<int> get_suffix_array(string s) {
       suff_lexs[i].idx = i;
     }
     sort(suff_lexs.begin(), suff_lexs.end(), cmp);
-    for (i = 0; i < s.length(); i++) {
+    for (i = 0; i < s.length(); i++)
       sort_idx[suff_lexs[i].idx] = i > 0 && suff_lexs[i] == suff_lexs[i - 1]
                                        ? sort_idx[suff_lexs[i - 1].idx]
                                        : i;
-    }
   }
 
   vector<int> suffix_array(suff_lexs.size(), 0);

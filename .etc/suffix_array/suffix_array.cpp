@@ -32,7 +32,7 @@ vector<int> get_suffix_array(string s) {
       suff_lexs[i].currlex = i + cnt < s.length() ? sort_idx[i + cnt] : -1;
       suff_lexs[i].idx = i;
     }
-    stable_sort(suff_lexs.begin(), suff_lexs.end(), cmp);
+    sort(suff_lexs.begin(), suff_lexs.end(), cmp);
     for (i = 0; i < s.length(); i++) {
       sort_idx[suff_lexs[i].idx] = i > 0 && suff_lexs[i] == suff_lexs[i - 1]
                                        ? sort_idx[suff_lexs[i - 1].idx]
@@ -41,9 +41,7 @@ vector<int> get_suffix_array(string s) {
   }
 
   vector<int> suffix_array(suff_lexs.size(), 0);
-  for (i = 0; i < suffix_array.size(); i++) {
-    suffix_array[i] = suff_lexs[i].idx;
-  }
+  for (i = 0; i < suffix_array.size(); i++) suffix_array[i] = suff_lexs[i].idx;
 
   return suffix_array;
 }

@@ -1,57 +1,61 @@
-#include <math.h>
-
 #include <algorithm>
 #include <iostream>
 #include <string>
 #include <vector>
 
+// Suffix array O(n log^2 n) implementation using prefix doubling.
+
 using namespace std;
 
-struct suffit {
-  int prvlex, curlex, idx;
+struct SuffLex {
+  int prevlex, currlex, idx;
+  bool operator==(SuffLex a) {
+    return prevlex == a.prevlex && currlex == a.currlex;
+  }
 };
 
-int cmp(suffit a, suffit b) {
-  return a.prvlex == b.prvlex ? (a.curlex < b.curlex ? 1 : 0)
-                              : (a.prvlex < b.prvlex ? 1 : 0);
+int cmp(SuffLex a, SuffLex b) {
+  return a.prevlex == b.prevlex ? (a.currlex < b.currlex)
+                                : (a.prevlex < b.prevlex);
 }
 
-int diff(suffit a, suffit b) {
-  return a.prvlex == b.prvlex ? (b.curlex - a.curlex) : (b.prvlex - a.prvlex);
+vector<int> get_suffix_array(string s) {
+  int i, stp, cnt;
+
+  vector<int> sort_idx(s.length(), 0);
+  vector<SuffLex> suff_lexs(s.length());
+
+  for (i = 0; i < s.length(); i++) sort_idx[i] = s[i];
+  for (stp = 1, cnt = 1; cnt >> 1 < s.length(); stp++, cnt <<= 1) {
+    for (i = 0; i < s.length(); i++) {
+      suff_lexs[i].prevlex = sort_idx[i];
+      suff_lexs[i].currlex = i + cnt < s.length() ? sort_idx[i + cnt] : -1;
+      suff_lexs[i].idx = i;
+    }
+    stable_sort(suff_lexs.begin(), suff_lexs.end(), cmp);
+    for (i = 0; i < s.length(); i++) {
+      sort_idx[suff_lexs[i].idx] = i > 0 && suff_lexs[i] == suff_lexs[i - 1]
+                                       ? sort_idx[suff_lexs[i - 1].idx]
+                                       : i;
+    }
+  }
+
+  vector<int> suffix_array(suff_lexs.size(), 0);
+  for (i = 0; i < suffix_array.size(); i++) {
+    suffix_array[i] = suff_lexs[i].idx;
+  }
+
+  return suffix_array;
 }
 
 int main() {
-  int i, stp, cnt;
-
   string s;
   cin >> s;
 
-  int sort_idx_table[(int) log2((float) s.length()) + 2][s.length()];
+  vector<int> suffix_array = get_suffix_array(s);
 
-  cout << (int) log2((float) s.length()) + 2 << endl;
-
-  vector<suffit> suffits(s.length());
-
-  for (i = 0; i < s.length(); i++) sort_idx_table[0][i] = s[i];
-  for (stp = 1, cnt = 1; cnt >> 1 < s.length(); stp++, cnt <<= 1) {
-    for (i = 0; i < s.length(); i++) {
-      suffits[i].prvlex = sort_idx_table[stp - 1][i];
-      suffits[i].curlex =
-          i + cnt < s.length() ? sort_idx_table[stp - 1][i + cnt] : -1;
-      suffits[i].idx = i;
-    }
-    sort(suffits.begin(), suffits.end(), cmp);
-    for (i = 0; i < s.length(); i++) {
-      sort_idx_table[stp][suffits[i].idx] =
-          i > 0 && diff(suffits[i], suffits[i - 1]) == 0
-              ? sort_idx_table[stp][suffits[i].idx]
-              : i;
-    }
-  }
-
-  for (i=0; i<s.length(); i++) {
-  	cout << sort_idx_table[stp-1][i] << endl;
-  }
+  for (int idx : suffix_array) cout << "|" << idx;
+  cout << "|" << endl;
 
   return 0;
 }

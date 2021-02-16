@@ -29,7 +29,7 @@ vector<int> get_lps(string p) {
 
 vector<int> get_pattern_idxs(string s, string p) {
   vector<int> pattern_idxs;
-  if (p.length() == 0) return pattern_idxs;
+  if (s.length() < p.length() || p.length() == 0) return pattern_idxs;
 
   vector<int> lps = get_lps(p);
 

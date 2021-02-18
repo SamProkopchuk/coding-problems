@@ -4,7 +4,7 @@
 using namespace std;
 
 int main() {
-  int test_cases, t, n, i, num, temp, swaps;
+  int test_cases, t, n, i, swaps;
   cin >> test_cases;
 
   for (t = 0; t < test_cases; t++) {

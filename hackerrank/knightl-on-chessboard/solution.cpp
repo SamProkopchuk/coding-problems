@@ -1,6 +1,6 @@
 #include <iostream>
-#include <algorithm>
 #include <queue>
+#include<cstring>
 
 using namespace std;
 
@@ -44,11 +44,12 @@ int calc_least_moves(int board[25][25], Knight &knight, size_t &n) {
 int main() {
   size_t n;
   cin >> n;
+  int board[25][25];
 
   Knight knight;
   for (int r = 1; r < n; ++r) {
     for (int u = 1; u < n; ++u) {
-      int board[25][25] = {};
+      memset(board, 0, sizeof(board));
       knight.r = r;
       knight.u = u;
       cout << calc_least_moves(board, knight, n) << " ";

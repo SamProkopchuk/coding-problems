@@ -14,8 +14,12 @@ int highest_value_palindrome(string &s, size_t k) {
       (s[i] > s[l - 1 - i]) ? (s[l - 1 - i] = s[i]) : (s[i] = s[l - 1 - i]);
       if (k == d || s[i] == '9')
         --k, --d;
-      else if (k >= 2)
-        s[i] = '9', s[l - 1 - i] = '9', k -= 2, --d;
+      else if (k >= 2) {
+        s[i] = '9';
+        s[l - 1 - i] = '9';
+        k -= 2;
+        --d;
+      }
     } else if (k > d && k >= 2 && s[i] != '9') {
       s[i] = '9';
       s[l - 1 - i] = '9';

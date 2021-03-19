@@ -13,11 +13,10 @@ int dp[MAXN];
 
 int leastDiff(vector<int>& arr, int k) {
   if (dp[k] == -1) {
-    int min_ = k;
+    dp[k] = k;
     FORR(x, arr) {
-      if (k - x >= 0) min_ = min(min_, leastDiff(arr, k - x));
+      if (k - x >= 0) dp[k] = min(dp[k], leastDiff(arr, k - x));
     }
-    dp[k] = min_;
   }
   return dp[k];
 }

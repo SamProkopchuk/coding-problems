@@ -1,4 +1,3 @@
-#include <algorithm>
 #include <iostream>
 #include <vector>
 
@@ -32,7 +31,6 @@ int main() {
     fill(begin(dp), end(dp), -1);
     dp[0] = 0;
     FOR(i, n) cin >> arr[i];
-    sort(arr.begin(), arr.end());
     cout << k - leastDiff(arr, k) << endl;
   }
   return 0;

@@ -13,13 +13,13 @@ using namespace std;
 const int MAXN = 1e5;
 ll dp[MAXN];
 
-ll bestScore(vector<int> &arr, int idx, bool maximizer) {
+ll bestScore(vector<int>& arr, int idx, bool maximizer) {
   if (idx >= arr.size()) return 0;
   int i;
   if (maximizer) {
     if (dp[idx] == -1) {
       int subsum = 0;
-      for (i=0; idx + i < arr.size() && i < 3; ++i) {
+      for (i = 0; idx + i < arr.size() && i < 3; ++i) {
         subsum += arr[idx + i];
         dp[idx] = max(dp[idx], subsum + bestScore(arr, idx + i + 1, false));
       }
@@ -27,9 +27,7 @@ ll bestScore(vector<int> &arr, int idx, bool maximizer) {
     return dp[idx];
   } else {
     ll res = LLONG_MAX;
-    FOR(i, 3) {
-      res = min(res, bestScore(arr, idx+i+1, true));
-    }
+    FOR(i, 3) { res = min(res, bestScore(arr, idx + i + 1, true)); }
     return res;
   }
 }

@@ -9,8 +9,7 @@ for _ in range(k):
 
 for r in d:
     d[r].sort()
-    s = d[r][0][0]
-    e = d[r][0][1]
+    s, e = d[r][0]
     for (c1, c2) in d[r]:
         if c1 > e:
             res -= e-s + 1

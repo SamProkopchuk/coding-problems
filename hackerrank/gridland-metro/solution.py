@@ -12,9 +12,9 @@ for r in d:
     s, e = d[r][0]
     for (c1, c2) in d[r]:
         if c1 > e:
-            res -= e-s + 1
+            res -= e - s + 1
             s = c1
         e = max(e, c2)
-    res -= e-s + 1
+    res -= e - s + 1
 
 print(res)

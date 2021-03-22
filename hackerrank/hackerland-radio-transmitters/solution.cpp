@@ -9,9 +9,6 @@ typedef signed long long ll;
 
 using namespace std;
 
-const int MOD = 1e9 + 7;
-const int MAXN = 200;
-
 int main() {
   int n, k, i;
   cin >> n >> k;

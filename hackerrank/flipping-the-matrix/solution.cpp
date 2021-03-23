@@ -13,7 +13,7 @@ int matrix[2 * MAXN][2 * MAXN];
 
 int main() {
   ios_base::sync_with_stdio(false);
-  int q, n, i, j, b, m;
+  int q, n, i, j, m;
   cin >> q;
   while (q--) {
     cin >> n;
@@ -23,11 +23,8 @@ int main() {
     m = 0;
     FOR(i, n) {
       FOR(j, n) {
-        b = matrix[i][j];
-        b = max(b, matrix[2 * n - 1 - i][j]);
-        b = max(b, matrix[i][2 * n - 1 - j]);
-        b = max(b, matrix[2 * n - 1 - i][2 * n - 1 - j]);
-        m += b;
+        m += max(max(matrix[i][j], matrix[2 * n - 1 - i][2 * n - 1 - j]),
+                 max(matrix[i][2 * n - 1 - j], matrix[2 * n - 1 - i][j]));
       }
     }
     cout << m << endl;

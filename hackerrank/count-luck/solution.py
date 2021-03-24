@@ -17,9 +17,7 @@ def dfs(grid, r, c):
         if (dr != 0) ^ (dc != 0) and isValid(r + dr,
                                              c + dc) and grid[r + dr][c + dc] != 'X':
             options += 1
-            ans = dfs(grid, r + dr, c + dc)
-            if ans != -1:
-                res = ans
+            res = max(res, dfs(grid, r + dr, c + dc))
     if res == -1:
         return res
     return res + 1 if options > 1 else res

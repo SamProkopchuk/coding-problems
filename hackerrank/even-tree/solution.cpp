@@ -10,12 +10,12 @@ using namespace std;
 
 int ans;
 
-int solve(vector<vector<int>> & edges, int u, int from) {
+int solve(vector<vector<int>> &edges, int u, int from) {
   int nchildren = 0;
   FORR(e, edges[u]) {
     if (e != from) {
       int a = solve(edges, e, u);
-      if (a % 2 == 0) ++ ans;
+      if (a % 2 == 0) ++ans;
       nchildren += a;
     }
   }
@@ -27,7 +27,7 @@ int main() {
   cin >> n >> e;
   vector<vector<int>> edges(n);
   FOR(i, e) {
-    cin >> u >> v, u--, v--;
+    cin >> u >> v, --u, --v;
     edges[u].push_back(v), edges[v].push_back(u);
   }
   ans = 0;

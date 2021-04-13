@@ -65,16 +65,13 @@ string getKthSubstring(const string &s, const vector<int> &suffixArray,
                        const vector<int> &lcpArray,
                        const vector<int> &subIdxLookup,
                        const vector<int> &subLenLookup, const int &k) {
-  int idx = 0;
-  for (int si=0; si < suffixArray.size(); ++si) {
+  for (int idx = 0, si = 0; si < suffixArray.size(); ++si) {
     int subIdx = subIdxLookup[suffixArray[si]];
     int subLen = subLenLookup[suffixArray[si]];
     if (idx + subLen - subIdx - lcpArray[si] < k)
       idx += subLen - subIdx - lcpArray[si];
-    else {
-      int end = lcpArray[si] + k - idx;
-      return s.substr(suffixArray[si], end);
-    }
+    else
+      return s.substr(suffixArray[si], lcpArray[si] + k - idx);
   }
   return "INVALID";
 }

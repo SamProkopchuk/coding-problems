@@ -16,7 +16,7 @@ int main() {
   FOR(i, n) { cin >> H[i]; }
   ll ans = 0;
   stack<ll> stk;
-  for (i = 0; i < n + 1; ++i) {
+  FOR(i, n+1) {
     while (!stk.empty() && H[j = stk.top()] > H[i]) {
       stk.pop();
       ans = max(ans, H[j] * (stk.empty() ? i : (i - stk.top() - 1)));

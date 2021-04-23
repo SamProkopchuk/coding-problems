@@ -23,6 +23,7 @@ unordered_set<ll> getFib() {
 }
 
 int main() {
+  ios_base::sync_with_stdio(false);
   ll t, n;
   unordered_set<ll> fib = getFib();
   cin >> t;

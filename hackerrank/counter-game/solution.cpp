@@ -18,7 +18,6 @@ int main() {
     p = 0;
     lbit = ~(((ull)-1) << 1 >> 1);
     cin >> n;
-    string winner;
     if (n == 1) {
       p = 1;
     } else {

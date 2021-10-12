@@ -18,20 +18,16 @@ int main() {
     p = 0;
     lbit = ~(((ull)-1) << 1 >> 1);
     cin >> n;
-    if (n == 1) {
-      p = 1;
-    } else {
-      while (n != 1) {
-        while (!(lbit & n)) {
-          lbit >>= 1;
-        }
-        if (lbit == n) {
-          n >>= 1;
-        } else {
-          n -= lbit;
-        }
-        ++p;
+    while (n != 1) {
+      while (!(lbit & n)) {
+        lbit >>= 1;
       }
+      if (lbit == n) {
+        n >>= 1;
+      } else {
+        n -= lbit;
+      }
+      ++p;
     }
     cout << ((p % 2) ? "Louise" : "Richard") << endl;
   }

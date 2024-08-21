@@ -19,7 +19,7 @@ int cmp(SuffLex a, SuffLex b) {
                                 : (a.prevlex < b.prevlex);
 }
 
-vector<int> get_suffix_array(string s) {
+vector<int> get_suffix_array(const string &s) {
   int i, stp, cnt;
 
   vector<int> sort_idx(s.length(), 0);

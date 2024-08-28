@@ -209,7 +209,6 @@ string get_solution(const string &s, const int special_char_index) {
     const int i = suffix_array[-best_score.second];
     const string_view common = string_view(s).substr(i, solution_lcp);
     solution.append(common);
-    const int centerpiece_length = best_score.first - 2 * solution_lcp;
     solution.append(string_view(s).substr(i + solution_lcp,
                                           best_score.first - 2 * solution_lcp));
     solution.insert(solution.end(), common.crbegin(), common.crend());

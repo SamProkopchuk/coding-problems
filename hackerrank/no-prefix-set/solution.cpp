@@ -20,7 +20,7 @@ void solve(const vector<string> &words) {
       const auto &it = trie[curr_node_idx].find(c);
       if ((i == word.size() - 1 && it != trie[curr_node_idx].end()) ||
           (i != 0 && common_prefix && trie[curr_node_idx].size() == 0)) {
-        // Current word is prefix or prev one, or prev one is prefix of current.
+        // Current word is prefix of prev one, or prev one is prefix of current.
         cout << "BAD SET" << endl;
         cout << word << endl;
         return;

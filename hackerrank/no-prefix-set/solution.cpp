@@ -8,7 +8,6 @@ using namespace std;
 
 namespace {
 
-constexpr int AL_SIZE = 'j' - 'a' + 1;
 constexpr int Ord(char c) { return c - 'a'; }
 
 void solve(const vector<string> &words) {

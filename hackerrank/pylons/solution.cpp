@@ -11,7 +11,7 @@ namespace {
 
 constexpr int MAX_N = 100000;
 
-int solve(const bitset<MAX_N> &b, int n, int k) {
+int get_solution(const bitset<MAX_N> &b, int n, int k) {
   int last = -1;
   int num_plants = 0;
   for (int i = 0; i < n; ++i) {
@@ -43,5 +43,5 @@ int main() {
     cin >> x;
     b[i] = x;
   }
-  cout << solve(b, n, k) << endl;
+  cout << get_solution(b, n, k) << endl;
 }

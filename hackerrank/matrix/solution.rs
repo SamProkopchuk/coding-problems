@@ -1,4 +1,3 @@
-use std::convert::TryInto;
 use std::io;
 use std::io::BufRead;
 use std::mem;
@@ -35,30 +34,21 @@ fn main() {
     let stdin = io::stdin();
     let mut stdin_lineit = stdin.lock().lines();
 
-    let [n, k]: [usize; 2] = stdin_lineit
-        .next()
-        .unwrap()
-        .unwrap()
-        .split_whitespace()
-        .map(|x| x.parse().unwrap())
-        .collect::<Vec<usize>>()
-        .as_slice()
-        .try_into()
-        .unwrap();
+    let (n, k): (usize, usize) = {
+        let line = stdin_lineit.next().unwrap().unwrap();
+        let mut parts = line.split_whitespace().map(|x| x.parse().unwrap());
+        (parts.next().unwrap(), parts.next().unwrap())
+    };
 
     let mut edges: Vec<Edge> = (0..(n - 1))
         .map(|_| {
-            stdin_lineit
-                .next()
-                .unwrap()
-                .unwrap()
-                .split_whitespace()
-                .map(|x| x.parse().unwrap())
-                .collect::<Vec<usize>>()
-                .as_slice()
-                .try_into()
-                .map(|[a, b, c]: [usize; 3]| Edge(a, b, c))
-                .unwrap()
+            let line = stdin_lineit.next().unwrap().unwrap();
+            let mut parts = line.split_whitespace().map(|x| x.parse().unwrap());
+            Edge(
+                parts.next().unwrap(),
+                parts.next().unwrap(),
+                parts.next().unwrap(),
+            )
         })
         .collect();
     edges.sort_by(|a, b| b.2.cmp(&a.2));

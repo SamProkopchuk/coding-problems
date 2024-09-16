@@ -44,11 +44,8 @@ fn main() {
         .map(|_| {
             let line = stdin_lineit.next().unwrap().unwrap();
             let mut parts = line.split_whitespace().map(|x| x.parse().unwrap());
-            Edge(
-                parts.next().unwrap(),
-                parts.next().unwrap(),
-                parts.next().unwrap(),
-            )
+            let [a, b, c] = [(); 3].map(|_| parts.next().unwrap());
+            Edge(a, b, c)
         })
         .collect();
     edges.sort_by(|a, b| b.2.cmp(&a.2));
@@ -68,12 +65,12 @@ fn main() {
     let mut total_cost: u64 = 0;
     for edge in &edges {
         if num_machines[find_set(&mut parent, edge.0)] + num_machines[find_set(&mut parent, edge.1)]
-            <= 1
+            > 1
         {
-            union_sets(&mut parent, &mut size, &mut num_machines, edge.0, edge.1);
-        } else {
             total_cost += edge.2 as u64;
+            continue;
         }
+        union_sets(&mut parent, &mut size, &mut num_machines, edge.0, edge.1);
     }
     println!("{}", total_cost);
 }

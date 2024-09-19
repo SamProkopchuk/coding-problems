@@ -4,48 +4,48 @@
 
 using namespace std;
 
-vector<int> get_lps(string p) {
-  vector<int> lps(p.length(), 0);
+vector<int> get_lps(const string &s) {
+  vector<int> lps(s.length());
+  lps[0] = 0;
 
-  // Length of previous string that's a proper prefix and suffix
-  int len = 0;
-  int i = 1;
-  while (i < p.length()) {
-    if (p[i] == p[len]) {
-      len++;
-      lps[i] = len;
-      i++;
-    } else if (len != 0) {
-      // See https://www.youtube.com/watch?v=tWDUjkMv6Lc
-      // For detailed explanation.
-      len = lps[len - 1];  // Actual big brain juicer Pog.
-    } else {
-      i++;
-    }
+  for (int i = 1; i < s.length(); ++i) {
+    int j = lps[i - 1];
+    while (j > 0 && s[i] != s[j])
+      j = lps[j - 1];
+    if (s[i] == s[j])
+      ++j;
+    lps[i] = j;
   }
 
   return lps;
 }
 
-vector<int> get_pattern_idxs(string s, string p) {
+vector<int> get_pattern_idxs(const string &s, const string &p) {
   vector<int> pattern_idxs;
-  if (s.length() < p.length() || p.length() == 0) return pattern_idxs;
+  if (s.length() < p.length() || p.length() == 0)
+    return pattern_idxs;
 
   vector<int> lps = get_lps(p);
+  cout << "LPS: ";
+  for (int i : lps)
+    cout << i << " ";
+  cout << endl;
 
   int i = 0, j = 0;
   while (i < s.length()) {
-    if (s[i] == s[j]) {
-      i++;
-      j++;
+    if (s[i] == p[j]) {
+      ++i;
+      ++j;
       if (j == p.length()) {
-        pattern_idxs.push_back(i - j);
+        pattern_idxs.push_back(i - p.length());
         j = lps[j - 1];
       }
-    } else if (j == 0) {
-      i++;
     } else {
-      j = lps[j - 1];
+      if (j > 0) {
+        j = lps[j - 1];
+      } else {
+        ++i;
+      }
     }
   }
 
@@ -59,7 +59,8 @@ int main() {
 
   vector<int> pattern_idxs = get_pattern_idxs(s, p);
 
-  for (int i : pattern_idxs) cout << "Found pattern at index " << i << endl;
+  for (int i : pattern_idxs)
+    cout << "Found pattern at index " << i << endl;
 
   return 0;
 }

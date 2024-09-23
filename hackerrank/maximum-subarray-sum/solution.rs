@@ -7,18 +7,18 @@ fn main() {
         let (n, m): (usize, i64) = (text_io::read!(), text_io::read!());
         let mut best: i64 = 0;
         let mut cumsum: i64 = 0;
-        let mut seen_parts: BTreeSet<i64> = BTreeSet::new();
+        let mut cumsums: BTreeSet<i64> = BTreeSet::new();
         for _ in 0..n {
             let x: i64 = text_io::read!();
             cumsum = (cumsum + x).rem_euclid(m);
             let target: i64 = cumsum + 1;
-            // Find largest element in seen_parts that is >= target, if it exists
-            if let Some(&largest) = seen_parts.range(target..).next() {
+            // Find largest element in cumsums that is >= target, if it exists
+            if let Some(&largest) = cumsums.range(target..).next() {
                 best = best.max(m + cumsum - largest);
             } else {
                 best = best.max(cumsum);
             }
-            seen_parts.insert(cumsum);
+            cumsums.insert(cumsum);
         }
 
         println!("{}", best);

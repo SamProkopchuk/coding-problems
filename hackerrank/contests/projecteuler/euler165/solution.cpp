@@ -66,7 +66,7 @@ constexpr optional<Point> GetIntersection(const Segment &s1,
   return s1.first + d1 * t1;
 }
 
-// Count number of intersections n has with previous segments.
+// Add points of intersection of segments[0..n-1] with segment n
 void ComputeIntersections(const array<Segment, kMaxN> &segments, const int n,
                           set<Point> &intersections) {
   for (int i = 0; i < n; ++i) {

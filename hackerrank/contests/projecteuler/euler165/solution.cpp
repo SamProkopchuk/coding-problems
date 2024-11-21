@@ -1,13 +1,16 @@
 #include <array>
 #include <cstdint>
 #include <iostream>
-#include <optional>
+#include <limits>
 #include <set>
 #include <utility>
 
+namespace {
+
 using namespace std;
 
-namespace {
+constexpr double kNull = numeric_limits<double>::quiet_NaN();
+static_assert(kNull != kNull);
 
 constexpr int kMaxN = 1000;
 constexpr double kEps = 1e-9;
@@ -29,6 +32,7 @@ private:
 
 struct Point {
   double x, y;
+  static constexpr Point NullPoint() { return Point{kNull, kNull}; }
   constexpr bool operator<(const Point &p) const {
     return (DoubleEqual(x, p.x) && !DoubleEqual(y, p.y) && y < p.y) || x < p.x;
   }
@@ -41,18 +45,18 @@ struct Point {
   constexpr bool ApproxEqual(const Point &p) const {
     return DoubleEqual(x, p.x) && DoubleEqual(y, p.y);
   }
+  constexpr bool IsNull() const { return x != x; }
 };
 
 using Segment = pair<Point, Point>;
 
 // https://stackoverflow.com/a/565282/10166393
-constexpr optional<Point> GetIntersection(const Segment &s1,
-                                          const Segment &s2) {
+constexpr Point GetIntersection(const Segment &s1, const Segment &s2) {
   const Point d1 = {s1.second.x - s1.first.x, s1.second.y - s1.first.y};
   const Point d2 = {s2.second.x - s2.first.x, s2.second.y - s2.first.y};
   const double cross = d1 * d2;
   if (DoubleEqual(cross, 0)) {
-    return nullopt;
+    return Point::NullPoint();
   }
   const Point diff = s2.first - s1.first;
 
@@ -61,7 +65,7 @@ constexpr optional<Point> GetIntersection(const Segment &s1,
 
   if (DoubleEqual(t1, 0) || DoubleEqual(t1, 1) || DoubleEqual(t2, 0) ||
       DoubleEqual(t2, 1) || t1 < 0 || t1 > 1 || t2 < 0 || t2 > 1) {
-    return nullopt;
+    return Point::NullPoint();
   }
   return s1.first + d1 * t1;
 }
@@ -70,11 +74,11 @@ constexpr optional<Point> GetIntersection(const Segment &s1,
 void ComputeIntersections(const array<Segment, kMaxN> &segments, const int n,
                           set<Point> &intersections) {
   for (int i = 0; i < n; ++i) {
-    if (auto intersection = GetIntersection(segments[i], segments[n])) {
-      const Point p = std::move(*intersection);
-      auto it = intersections.lower_bound(p);
-      if (it == intersections.end() || !it->ApproxEqual(p)) {
-        intersections.emplace(std::move(p));
+    const Point intersection = GetIntersection(segments[i], segments[n]);
+    if (!intersection.IsNull()) {
+      auto it = intersections.lower_bound(intersection);
+      if (it == intersections.end() || !it->ApproxEqual(intersection)) {
+        intersections.emplace(std::move(intersection));
       }
     }
   }

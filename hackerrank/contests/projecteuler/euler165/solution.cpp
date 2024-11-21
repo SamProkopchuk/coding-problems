@@ -67,20 +67,17 @@ constexpr optional<Point> GetIntersection(const Segment &s1,
 }
 
 // Count number of intersections n has with previous segments.
-int GetNumIntersections(const array<Segment, kMaxN> &segments, const int n,
-                        set<Point> &intersections) {
-  int num_intersections = 0;
+void ComputeIntersections(const array<Segment, kMaxN> &segments, const int n,
+                          set<Point> &intersections) {
   for (int i = 0; i < n; ++i) {
     if (auto intersection = GetIntersection(segments[i], segments[n])) {
-      const Point &p = *intersection;
+      const Point p = std::move(*intersection);
       auto it = intersections.lower_bound(p);
       if (it == intersections.end() || !it->ApproxEqual(p)) {
-        intersections.insert(p);
-        ++num_intersections;
+        intersections.emplace(std::move(p));
       }
     }
   }
-  return num_intersections;
 }
 
 } // namespace
@@ -94,16 +91,13 @@ int main() {
 
   array<Segment, kMaxN> segments;
   Rng rng;
-  int num_intersections = 0;
   set<Point> intersections;
   for (int i = 0; i < n; ++i) {
     segments[i].first.x = rng.Get();
     segments[i].first.y = rng.Get();
     segments[i].second.x = rng.Get();
     segments[i].second.y = rng.Get();
-    if (i > 0) {
-      num_intersections += GetNumIntersections(segments, i, intersections);
-    }
+    ComputeIntersections(segments, i, intersections);
   }
-  cout << num_intersections << endl;
+  cout << intersections.size() << endl;
 }

@@ -29,10 +29,10 @@ private:
 
 struct Point {
   double x, y;
-  // Cross product.
   constexpr bool operator<(const Point &p) const {
     return x < p.x || (x == p.x && y < p.y);
   }
+  // Cross product.
   constexpr double operator*(const Point &p) const { return x * p.y - y * p.x; }
   constexpr Point operator*(const double d) const { return {x * d, y * d}; }
   constexpr Point operator-(const Point &p) const { return {x - p.x, y - p.y}; }

@@ -73,9 +73,8 @@ int GetNumIntersections(const array<Segment, kMaxN> &segments, const int n,
   for (int i = 0; i < n; ++i) {
     if (auto intersection = GetIntersection(segments[i], segments[n])) {
       const Point &p = *intersection;
-      const Point ptemp = p - kEps;
-      auto it = intersections.lower_bound(ptemp);
-      if (it == intersections.end() || !it->ApproxEqual(ptemp)) {
+      auto it = intersections.lower_bound(p);
+      if (it == intersections.end() || !it->ApproxEqual(p)) {
         intersections.insert(p);
         ++num_intersections;
       }

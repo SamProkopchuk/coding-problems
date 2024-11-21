@@ -30,7 +30,7 @@ private:
 struct Point {
   double x, y;
   constexpr bool operator<(const Point &p) const {
-    return x < p.x || (x == p.x && y < p.y);
+    return (DoubleEqual(x, p.x) && !DoubleEqual(y, p.y) && y < p.y) || x < p.x;
   }
   // Cross product.
   constexpr double operator*(const Point &p) const { return x * p.y - y * p.x; }

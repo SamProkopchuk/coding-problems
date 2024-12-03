@@ -1,4 +1,4 @@
-use std::fs::File;
+use std::fs::{self, File};
 use std::io::{BufRead, BufReader, Write};
 use std::path::PathBuf;
 
@@ -9,20 +9,17 @@ use crate::api::Api;
 pub trait AdventOfCode {
     fn solve() -> Result<()>;
 
-    // fn input_raw(year: u32, day: u32) -> Result<String> {
-    //     let problem_file = cache_input(year, day)?;
-    //     let contents = fs::read_to_string(problem_file)?.parse::<String>()?;
-    //     Ok(contents)
-    // }
+    fn input_raw(year: u32, day: u32) -> Result<String> {
+        let problem_file = cache_input(year, day)?;
+        let contents: String = fs::read_to_string(problem_file)?;
+        Ok(contents)
+    }
 
     fn input_lines(year: u32, day: u32) -> Result<Vec<String>> {
         let problem_file = cache_input(year, day)?;
         let file = File::open(problem_file)?;
         let reader = BufReader::new(file);
-        let mut lines = vec![];
-        for line in reader.lines() {
-            lines.push(line?);
-        }
+        let lines = reader.lines().collect::<Result<_, _>>()?;
         Ok(lines)
     }
 }

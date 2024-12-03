@@ -23,7 +23,6 @@ impl AdventOfCode for Day {
             .fold(0, |acc, m| acc + mul(m.unwrap().as_str()));
         println!("{total}");
 
-        // Stupidly overcomplicated, but nice challenge.
         // Reads two ordered iterators of (index, bool) pairs & reverses.
         let mut filter_indices: Vec<(usize, bool)> = itertools::merge_join_by(
             Regex::new(r"do\(\)")?
@@ -35,10 +34,8 @@ impl AdventOfCode for Day {
             |a, b| a.0.cmp(&b.0),
         )
         .map(|eob| eob.into_left())
-        .collect::<Vec<_>>()
-        .into_iter()
-        .rev()
         .collect();
+        filter_indices.reverse();
         let mut filter: bool = false;
         let mut filtered_total: i32 = 0;
         for m in re.find_iter(&memory).map(|m| m.unwrap()) {

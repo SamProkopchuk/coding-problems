@@ -32,7 +32,7 @@ fn get_vec2d(raw: &str) -> Vec2D {
 fn symmetry_score(points: &Vec<Vec2D>) -> i64 {
     let mut score: i64 = 0;
     let counts: HashMap<&Vec2D, usize> = points.iter().counts();
-    for (point, count) in counts.iter() {
+    for (point, _count) in counts.iter() {
         if point.0 == MID_ROW {
             score += 1;
         } else {

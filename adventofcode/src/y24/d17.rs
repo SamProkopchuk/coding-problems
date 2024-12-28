@@ -46,28 +46,6 @@ fn run_instructions(instructions: &Vec<Instruction>, registers: &mut Registers) 
     }
     outputs
 }
-// (2,4),(1,2),(7,5),(4,3),(0,3),(1,7),(5,5),(3,0)
-// B = A % 8;
-// B = B^2
-// C = A>>B
-// B = B^C
-// A = A>>3
-// B=B^7
-// print(B%8)
-//     if A != 0 { ip = 0 }
-//
-// A = a B = 0 C= 0
-// B = (A%8)^2
-// C= A>>(A%8)^2
-// B = ((A%8)^2)^(A>>(A%8)^2)
-// B = ((A%8)^2)^(A>>(A%8)^2)^7
-// print(
-//     ((A%8)^2)^(A>>(A%8)^2)^7
-// )
-// A = A >> 3
-//
-// X = (A%8)^2
-// (X ^ (A >> X)) ^ 7
 
 impl AdventOfCode for Day {
     fn solve() -> anyhow::Result<()> {

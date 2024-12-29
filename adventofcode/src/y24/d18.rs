@@ -61,11 +61,11 @@ impl AdventOfCode for Day {
         };
         let num_steps: usize = get_num_steps_if_path_exists(&memory).unwrap();
         println!("{}", num_steps);
-        let num_positions: Vec<usize> = (1..=positions.len()).collect();
-        let first_blocking_index: usize = num_positions
-            .binary_search_by(|&n| {
+        let position_indices: Vec<usize> = (0..positions.len()).collect();
+        let first_blocking_index: usize = position_indices
+            .binary_search_by(|&i| {
                 let mut temp: Vec<Vec<char>> = base_memory.clone();
-                for (x, y) in positions.iter().take(n) {
+                for (x, y) in positions.iter().take(i + 1) {
                     temp[*y][*x] = WALL;
                 }
                 match get_num_steps_if_path_exists(&temp).is_none() {

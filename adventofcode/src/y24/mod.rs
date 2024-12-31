@@ -17,5 +17,6 @@ pub mod d16;
 pub mod d17;
 pub mod d18;
 pub mod d19;
+pub mod d20;
 
-pub use d19::Day;
+pub use d20::Day;

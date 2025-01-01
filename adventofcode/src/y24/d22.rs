@@ -38,16 +38,9 @@ impl AdventOfCode for Day {
                 last_deltas.rotate_right(1);
                 last_deltas[0] = last_digits[0] - last_digits[1];
                 if days_gone_by >= 4 {
-                    let bananas: Number = last_digits[0] as Number;
-                    let last_deltas: (i8, i8, i8, i8) = (
-                        last_deltas[0],
-                        last_deltas[1],
-                        last_deltas[2],
-                        last_deltas[3],
-                    );
-                    if !bananas_by_sequence.contains_key(&last_deltas) {
-                        bananas_by_sequence.insert(last_deltas, bananas);
-                    }
+                    bananas_by_sequence
+                        .entry(last_deltas.into())
+                        .or_insert(last_digits[0] as Number);
                 }
             }
             for (sequence, bananas) in bananas_by_sequence.drain() {

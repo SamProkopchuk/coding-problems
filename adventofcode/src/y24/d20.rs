@@ -1,6 +1,6 @@
 use crate::adventofcode::AdventOfCode;
 
-use std::collections::{HashSet, VecDeque};
+use std::collections::VecDeque;
 
 pub struct Day;
 

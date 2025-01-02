@@ -1,7 +1,6 @@
 use crate::adventofcode::AdventOfCode;
 
 use std::collections::{HashMap, HashSet};
-use std::ops::AddAssign;
 
 pub struct Day;
 
@@ -93,10 +92,10 @@ fn simulate(
             .iter()
             .fold(HashMap::new(), |mut acc, ((x1, op, x2), _)| {
                 acc.entry(*x1)
-                    .or_insert(HashSet::new())
+                    .or_default()
                     .insert((*x1, *op, *x2));
                 acc.entry(*x2)
-                    .or_insert(HashSet::new())
+                    .or_default()
                     .insert((*x1, *op, *x2));
                 acc
             });
@@ -107,9 +106,9 @@ fn simulate(
         let mut to_remove: Vec<Index> = Vec::new();
         for wire in unresolved_wires.iter() {
             if input_pairs_adj
-                .get(&wire)
+                .get(wire)
                 .unwrap()
-                .into_iter()
+                .iter()
                 .all(|(x1, op, x2)| {
                     if let (Some(v1), Some(v2)) = (wire_values.get(x1), wire_values.get(x2)) {
                         let value: bool = op.eval(*v1, *v2);
@@ -166,9 +165,7 @@ impl AdventOfCode for Day {
         let x: u64 = lines[..=44].iter().rev().fold(0, |acc, line| {
             acc * 2
                 + line
-                    .split(":")
-                    .skip(1)
-                    .next()
+                    .split(":").nth(1)
                     .unwrap()
                     .trim()
                     .parse::<u8>()
@@ -180,9 +177,7 @@ impl AdventOfCode for Day {
             .fold(0, |acc, line| {
                 acc * 2
                     + line
-                        .split(":")
-                        .skip(1)
-                        .next()
+                        .split(":").nth(1)
                         .unwrap()
                         .trim()
                         .parse::<u8>()
@@ -205,7 +200,7 @@ impl AdventOfCode for Day {
                 )
             })
             .fold(HashMap::new(), |mut acc, (inputs, output)| {
-                acc.entry(inputs).or_insert(HashSet::new()).insert(output);
+                acc.entry(inputs).or_default().insert(output);
                 acc
             });
         let (z, setup_time, compute_time, final_time) = simulate(x, y, &circuits);

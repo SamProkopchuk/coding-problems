@@ -228,8 +228,6 @@ impl AdventOfCode for Day {
             std::time::Duration::new(0, 0),
             std::time::Duration::new(0, 0),
         );
-        let mut failed_z_bits: Vec<usize> = Vec::new();
-        let mut counts_by_candidate: HashMap<Index, usize> = HashMap::new();
         for i in 0..=44 {
             let mask: u64 = 1 << i;
             for (x, y) in [(0, 0), (0, mask), (mask, 0), (mask, mask)].iter() {
@@ -240,44 +238,12 @@ impl AdventOfCode for Day {
                 let expected_mask = x + y;
                 if z & expected_mask != expected_mask {
                     println!("Failed z bit: {}", i);
-                    println!("x: {:b}", x);
-                    println!("y: {:b}", y);
-                    println!("z: {:b}", z);
-                    failed_z_bits.push(i);
-                    let mut z = z;
-                    while z > 0 {
-                        let z_bit = z.trailing_zeros();
-                        assert!(z_bit <= 45);
-                        let zi = format!("z{:02}", z_bit);
-                        let z_index = wire_to_index(&zi);
-                        let mut src_stack: Vec<Index> = vec![z_index];
-                        while let Some(src) = src_stack.pop() {
-                            counts_by_candidate.entry(src).or_insert(0).add_assign(1);
-                            if let Some((x1, x2)) = src_wires.get(&src) {
-                                if !src_wires.get(x1).is_none() {
-                                    src_stack.push(*x1);
-                                }
-                                if !src_wires.get(x2).is_none() {
-                                    src_stack.push(*x2);
-                                }
-                            }
-                        }
-                        z &= !(1 << z_bit);
-                    }
+                    println!("x: {:045b}", x);
+                    println!("y: {:045b}", y);
+                    println!("z: {:045b}", z);
                 }
             }
         }
-        let mut count_candidate_pairs: Vec<(usize, Index)> = counts_by_candidate
-            .iter()
-            .map(|(candidate, count)| (*count, *candidate))
-            .collect();
-        count_candidate_pairs.sort_by_key(|k| std::cmp::Reverse(k.0));
-        for (count, candidate) in count_candidate_pairs.iter() {
-            println!("Candidate: {}, Count: {}", index_to_wire(*candidate), count);
-        }
-        println!("Num candidates: {}", counts_by_candidate.len());
-
-        println!("Failed z bits: {:?}", failed_z_bits);
         println!("Setup time: {:?}", acc_setup_time);
         println!("Compute time: {:?}", acc_compute_time);
         println!("Final time: {:?}", acc_final_time);

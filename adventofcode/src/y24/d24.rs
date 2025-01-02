@@ -5,8 +5,6 @@ use std::ops::AddAssign;
 
 pub struct Day;
 
-type Index = u16;
-
 #[derive(Debug, Hash, Eq, PartialEq, Copy, Clone)]
 enum Op {
     AND,
@@ -31,6 +29,8 @@ impl Op {
         }
     }
 }
+
+type Index = u16;
 
 const fn char_to_index(c: char) -> Index {
     match c {
@@ -70,9 +70,6 @@ fn simulate(
     x: u64,
     y: u64,
     circuits: &HashMap<(Index, Op, Index), HashSet<Index>>,
-    x_values: &Vec<Index>,
-    y_values: &Vec<Index>,
-    z_values: &Vec<Index>,
 ) -> (
     u64,
     std::time::Duration,
@@ -80,17 +77,17 @@ fn simulate(
     std::time::Duration,
 ) {
     let now = std::time::SystemTime::now();
-    let mut wire_values: Vec<i8> = vec![-1; Index::MAX as usize];
-    let mut unresolved_wires: HashSet<Index> = HashSet::new();
-    for i in 0..=44 {
-        let xi = (x & (1 << i)) as i8;
-        let yi = (y & (1 << i)) as i8;
-        wire_values[x_values[i] as usize] = xi;
-        wire_values[y_values[i] as usize] = yi;
-        unresolved_wires.insert(x_values[i]);
-        unresolved_wires.insert(y_values[i]);
-    }
+    let (mut x, mut y) = (x, y);
+    let mut wire_values: HashMap<Index, bool> = (0..=44).fold(HashMap::new(), |mut acc, i| {
+        let (xi, yi) = (format!("x{:02}", i), format!("y{:02}", i));
+        acc.insert(wire_to_index(&xi), x & 1 == 1);
+        acc.insert(wire_to_index(&yi), y & 1 == 1);
+        x >>= 1;
+        y >>= 1;
+        acc
+    });
     // Wires where you know the input but the circuit it belongs to isn't solved yet
+    let mut unresolved_wires: HashSet<Index> = wire_values.keys().copied().collect();
     let input_pairs_adj: HashMap<Index, HashSet<(Index, Op, Index)>> =
         circuits
             .iter()
@@ -114,19 +111,14 @@ fn simulate(
                 .unwrap()
                 .into_iter()
                 .all(|(x1, op, x2)| {
-                    let v1 = wire_values[*x1 as usize];
-                    let v2 = wire_values[*x2 as usize];
-                    if v1 != -1 && v2 != -1 {
-                        let v1 = v1 != 0;
-                        let v2 = v2 != 0;
-                        let value: bool = op.eval(v1, v2);
+                    if let (Some(v1), Some(v2)) = (wire_values.get(x1), wire_values.get(x2)) {
+                        let value: bool = op.eval(*v1, *v2);
                         for output in circuits.get(&(*x1, *op, *x2)).unwrap() {
-                            if wire_values[*output as usize] != -1 {
-                                assert!(wire_values[*output as usize] == value as i8);
+                            if let Some(existing_value) = wire_values.get(output) {
+                                assert!(*existing_value == value);
                                 continue;
                             }
-                            assert!(wire_values[*output as usize] == -1);
-                            wire_values[*output as usize] = value as i8;
+                            assert!(wire_values.insert(*output, value).is_none());
                             if *output < Z_MIN {
                                 to_add.push(*output);
                             }
@@ -140,25 +132,24 @@ fn simulate(
                 to_remove.push(*wire);
             }
         }
-        to_add.iter().for_each(|wire| {
-            unresolved_wires.insert(*wire);
-        });
-        to_remove.iter().for_each(|wire| {
-            unresolved_wires.remove(wire);
-        });
+        for wire in to_add {
+            unresolved_wires.insert(wire);
+        }
+        for wire in to_remove {
+            unresolved_wires.remove(&wire);
+        }
     }
     let compute_time = now.elapsed().unwrap();
 
     let now = std::time::SystemTime::now();
     let res = (0..=45)
         .scan((0, 1), |(acc, mul), i| {
-            let value = wire_values[z_values[i] as usize];
-            if value != -1 {
-                *acc += (value as u64) * *mul;
+            let zi = format!("z{:02}", i);
+            if let Some(value) = wire_values.get(&wire_to_index(&zi)) {
+                *acc += (*value as u64) * *mul;
                 *mul *= 2;
                 Some(*acc)
             } else {
-                assert!(false);
                 None
             }
         })
@@ -166,17 +157,6 @@ fn simulate(
         .unwrap();
     let final_time = now.elapsed().unwrap();
     (res, setup_time, compute_time, final_time)
-}
-
-fn get_x_y_z_values() -> (Vec<Index>, Vec<Index>, Vec<Index>) {
-    let (mut x_values, mut y_values, mut z_values) = (Vec::new(), Vec::new(), Vec::new());
-    for i in 0..=44 {
-        x_values.push(wire_to_index(&format!("x{:02}", i)));
-        y_values.push(wire_to_index(&format!("y{:02}", i)));
-        z_values.push(wire_to_index(&format!("z{:02}", i)));
-    }
-    z_values.push(wire_to_index("z45"));
-    (x_values, y_values, z_values)
 }
 
 impl AdventOfCode for Day {
@@ -228,9 +208,7 @@ impl AdventOfCode for Day {
                 acc.entry(inputs).or_insert(HashSet::new()).insert(output);
                 acc
             });
-        let (x_values, y_values, z_values) = get_x_y_z_values();
-        let (z, setup_time, compute_time, final_time) =
-            simulate(x, y, &circuits, &x_values, &y_values, &z_values);
+        let (z, setup_time, compute_time, final_time) = simulate(x, y, &circuits);
         println!("{:?}", z);
         let src_wires: HashMap<Index, (Index, Index)> =
             circuits
@@ -255,8 +233,7 @@ impl AdventOfCode for Day {
         for i in 0..=44 {
             let mask: u64 = 1 << i;
             for (x, y) in [(0, 0), (0, mask), (mask, 0), (mask, mask)].iter() {
-                let (z, setup_time, compute_time, final_time) =
-                    simulate(*x, *y, &circuits, &x_values, &y_values, &z_values);
+                let (z, setup_time, compute_time, final_time) = simulate(*x, *y, &circuits);
                 acc_setup_time += setup_time;
                 acc_compute_time += compute_time;
                 acc_final_time += final_time;

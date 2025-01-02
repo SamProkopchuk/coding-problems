@@ -36,16 +36,12 @@ fn max_clique(
 ) -> BTreeSet<Node> {
     let mut clique: BTreeSet<Node> = BTreeSet::new();
     let neighbors: Vec<Node> = adj.get(&node).unwrap().iter().copied().collect();
-    for n in 1..neighbors.len() {
+    for n in 1..=neighbors.len() {
         if n < *best_so_far {
             continue;
         }
         for comb in neighbors.iter().combinations(n) {
-            let mut candidates: BTreeSet<Node> = comb
-                .into_iter()
-                .chain(std::iter::once(&node))
-                .copied()
-                .collect();
+            let mut candidates: BTreeSet<Node> = comb.into_iter().copied().collect();
             let mut no_break = true;
             for candidate in candidates.iter().copied().collect::<Vec<Node>>() {
                 candidates.remove(&candidate);
@@ -56,6 +52,7 @@ fn max_clique(
                 candidates.insert(candidate);
             }
             if no_break && candidates.len() > clique.len() {
+                candidates.insert(node);
                 clique = candidates;
                 *best_so_far = clique.len();
             }

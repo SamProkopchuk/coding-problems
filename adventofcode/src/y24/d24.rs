@@ -91,12 +91,8 @@ fn simulate(
         circuits
             .iter()
             .fold(HashMap::new(), |mut acc, ((x1, op, x2), _)| {
-                acc.entry(*x1)
-                    .or_default()
-                    .insert((*x1, *op, *x2));
-                acc.entry(*x2)
-                    .or_default()
-                    .insert((*x1, *op, *x2));
+                acc.entry(*x1).or_default().insert((*x1, *op, *x2));
+                acc.entry(*x2).or_default().insert((*x1, *op, *x2));
                 acc
             });
     let setup_time = now.elapsed().unwrap();
@@ -165,7 +161,8 @@ impl AdventOfCode for Day {
         let x: u64 = lines[..=44].iter().rev().fold(0, |acc, line| {
             acc * 2
                 + line
-                    .split(":").nth(1)
+                    .split(":")
+                    .nth(1)
                     .unwrap()
                     .trim()
                     .parse::<u8>()
@@ -177,7 +174,8 @@ impl AdventOfCode for Day {
             .fold(0, |acc, line| {
                 acc * 2
                     + line
-                        .split(":").nth(1)
+                        .split(":")
+                        .nth(1)
                         .unwrap()
                         .trim()
                         .parse::<u8>()

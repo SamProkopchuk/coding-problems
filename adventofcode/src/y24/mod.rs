@@ -21,5 +21,6 @@ pub mod d20;
 pub mod d21;
 pub mod d22;
 pub mod d23;
+pub mod d24;
 
-pub use d23::Day;
+pub use d24::Day;

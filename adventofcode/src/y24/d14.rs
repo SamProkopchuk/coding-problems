@@ -51,7 +51,7 @@ impl AdventOfCode for Day {
             .iter()
             .map(|line| {
                 line.split_whitespace()
-                    .map(|s| get_vec2d(s))
+                    .map(get_vec2d)
                     .collect_tuple()
                     .unwrap()
             })

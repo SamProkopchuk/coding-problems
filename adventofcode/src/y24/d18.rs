@@ -69,8 +69,8 @@ impl AdventOfCode for Day {
                     temp[*y][*x] = WALL;
                 }
                 match get_num_steps_if_path_exists(&temp).is_none() {
-                    true => return std::cmp::Ordering::Greater,
-                    false => return std::cmp::Ordering::Less,
+                    true => std::cmp::Ordering::Greater,
+                    false => std::cmp::Ordering::Less,
                 }
             })
             .unwrap_err();

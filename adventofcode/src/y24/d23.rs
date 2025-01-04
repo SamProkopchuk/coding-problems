@@ -75,15 +75,15 @@ impl AdventOfCode for Day {
             .collect();
         let adj: BTreeMap<Node, BTreeSet<Node>> =
             edges.iter().fold(BTreeMap::new(), |mut acc, (a, b)| {
-                acc.entry(*a).or_insert(BTreeSet::new()).insert(*b);
-                acc.entry(*b).or_insert(BTreeSet::new()).insert(*a);
+                acc.entry(*a).or_default().insert(*b);
+                acc.entry(*b).or_default().insert(*a);
                 acc
             });
         let start_with_t_indices: BTreeSet<Node> =
             (0..26).map(|i| (('t' as Node - A_BASE) * 26 + i)).collect();
         let mut ans: Node = 0;
         for t in &start_with_t_indices {
-            let neighbors = adj.get(&t);
+            let neighbors = adj.get(t);
             if neighbors.is_none() {
                 continue;
             }
@@ -113,8 +113,8 @@ impl AdventOfCode for Day {
         let max_clique: BTreeSet<Node> = adj
             .keys()
             .map(|&node| {
-                let max_clique = max_clique(&adj, node, &mut best_so_far);
-                max_clique
+                
+                max_clique(&adj, node, &mut best_so_far)
             })
             .max_by_key(|clique| clique.len())
             .unwrap();

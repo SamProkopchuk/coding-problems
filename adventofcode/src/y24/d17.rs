@@ -28,15 +28,15 @@ fn run_instructions(instructions: &Vec<Instruction>, registers: &mut Registers) 
     while (0..instructions.len()).contains(&ip) {
         let (op, operand) = instructions[ip];
         match op {
-            0 => registers.0 = registers.0 >> combo(registers, &operand),
-            1 => registers.1 = registers.1 ^ (operand as Register),
+            0 => registers.0 >>= combo(registers, &operand),
+            1 => registers.1 ^= operand as Register,
             2 => registers.1 = combo(registers, &operand) % 8,
             3 => {
                 if registers.0 != 0 {
                     ip = (operand as usize).wrapping_sub(1);
                 }
             }
-            4 => registers.1 = registers.1 ^ registers.2,
+            4 => registers.1 ^= registers.2,
             5 => outputs.push(combo(registers, &operand) % 8),
             6 => registers.1 = registers.0 >> combo(registers, &operand),
             7 => registers.2 = registers.0 >> combo(registers, &operand),
@@ -53,9 +53,7 @@ impl AdventOfCode for Day {
         let mut registers: Registers = lines[..3]
             .iter()
             .map(|line| {
-                line.split(":")
-                    .skip(1)
-                    .next()
+                line.split(":").nth(1)
                     .unwrap()
                     .trim()
                     .parse::<Register>()
@@ -66,9 +64,7 @@ impl AdventOfCode for Day {
         let raw_instructions: Vec<IT> = lines
             .last()
             .unwrap()
-            .split(":")
-            .skip(1)
-            .next()
+            .split(":").nth(1)
             .unwrap()
             .trim()
             .split(",")

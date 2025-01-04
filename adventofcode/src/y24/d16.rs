@@ -76,14 +76,14 @@ fn get_best_path_data(
         {
             sources
                 .entry(next_state)
-                .or_insert(HashSet::new())
+                .or_default()
                 .insert(state);
             let next_position: Position = (inext, jnext, direction);
             if !seen_positions.contains(&next_position) {
                 seen_positions.insert(next_position);
                 priority_map
                     .entry(next_state.3)
-                    .or_insert(Vec::new())
+                    .or_default()
                     .push(next_position);
             }
         }
@@ -95,14 +95,14 @@ fn get_best_path_data(
         {
             sources
                 .entry(next_state)
-                .or_insert(HashSet::new())
+                .or_default()
                 .insert(state);
             let next_position: Position = (inext, jnext, left_turn_direction);
             if !seen_positions.contains(&next_position) {
                 seen_positions.insert(next_position);
                 priority_map
                     .entry(next_state.3)
-                    .or_insert(Vec::new())
+                    .or_default()
                     .push(next_position);
             }
         }
@@ -113,14 +113,14 @@ fn get_best_path_data(
         {
             sources
                 .entry(next_state)
-                .or_insert(HashSet::new())
+                .or_default()
                 .insert(state);
             let next_position: Position = (inext, jnext, right_turn_direction);
             if !seen_positions.contains(&next_position) {
                 seen_positions.insert(next_position);
                 priority_map
                     .entry(next_state.3)
-                    .or_insert(Vec::new())
+                    .or_default()
                     .push(next_position);
             }
         }

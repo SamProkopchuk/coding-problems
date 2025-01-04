@@ -71,7 +71,7 @@ impl Board {
         pos.row * self.num_cols + pos.col
     }
     fn at(&self, pos: &Pos) -> u8 {
-        self.board[self.raw_index(&pos)]
+        self.board[self.raw_index(pos)]
     }
     fn is_valid(&self, pos: &Pos) -> bool {
         pos.row < self.num_rows && pos.col < self.num_cols
@@ -132,15 +132,15 @@ impl AdventOfCode for Day {
                 .unwrap();
         board[row * num_cols + col] = EMPTY;
         let start: Pos = Pos {
-            row: row,
-            col: col,
-            dir: dir,
+            row,
+            col,
+            dir,
         };
         let mut pos = start;
         let board = Board {
-            board: board,
-            num_rows: num_rows,
-            num_cols: num_cols,
+            board,
+            num_rows,
+            num_cols,
         };
         let mut been: BitVec = BitVec::repeat(false, num_rows * num_cols);
         while board.is_valid(&pos) {

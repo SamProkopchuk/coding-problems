@@ -57,7 +57,6 @@ impl AdventOfCode for Day {
                 let nums: Vec<i64> = it
                     .next()
                     .unwrap()
-                    .trim()
                     .split_whitespace()
                     .map(|x| x.parse::<i64>().unwrap())
                     .collect();
@@ -68,7 +67,7 @@ impl AdventOfCode for Day {
         let mut total: i64 = 0;
         for (value, nums) in equations.iter() {
             for op_comb in repeat_n(P1_OPERATIONS, nums.len() - 1).multi_cartesian_product() {
-                if *value == evaluate(&nums, &op_comb) {
+                if *value == evaluate(nums, &op_comb) {
                     total += value;
                     break;
                 }

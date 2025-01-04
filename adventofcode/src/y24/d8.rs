@@ -32,7 +32,7 @@ impl AdventOfCode for Day {
             if c == EMPTY {
                 return acc;
             }
-            acc.entry(c).or_insert(BTreeSet::new()).insert((i, j));
+            acc.entry(c).or_default().insert((i, j));
             acc
         });
         let antinodes: HashSet<Coordinate> =

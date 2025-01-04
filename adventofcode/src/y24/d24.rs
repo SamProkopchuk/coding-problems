@@ -121,9 +121,9 @@ fn simulate(
             }
         }
     }
-    if let Some(_) = circuits
+    if circuits
         .iter()
-        .find(|(_, dst)| wire_values[*dst as usize] == -1)
+        .any(|(_, dst)| wire_values[*dst as usize] == -1)
     {
         return 0;
     }

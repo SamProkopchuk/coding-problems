@@ -18,7 +18,7 @@ fn num_ways_for_design(towels: &Vec<&str>, design: &str) -> Ways {
             .position(|towel| design[index..].starts_with(towel))
             .unwrap_or(towels.len());
         while start_match_index < towels.len()
-            && design.chars().skip(index).next().unwrap()
+            && design.chars().nth(index).unwrap()
                 == towels[start_match_index].chars().next().unwrap()
         {
             if design[index..].starts_with(towels[start_match_index]) {

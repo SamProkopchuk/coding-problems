@@ -17,7 +17,7 @@ impl AdventOfCode for Day {
                 if line.is_empty() {
                     None
                 } else {
-                    let mut matches = re.find_iter(&line);
+                    let mut matches = re.find_iter(line);
                     Some((
                         matches
                             .next()

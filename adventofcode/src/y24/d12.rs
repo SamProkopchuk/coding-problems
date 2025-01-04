@@ -46,7 +46,7 @@ fn get_area_perimeter_num_sides(
     let type_: char = farm[point.0][point.1];
     let mut area: u32 = 0;
     let mut num_connections_x2: u32 = 0;
-    let mut num_corners: u32 = get_num_corners(&farm, point);
+    let mut num_corners: u32 = get_num_corners(farm, point);
 
     seen.insert(point);
     let mut stack: Vec<Point> = vec![point];
@@ -58,7 +58,7 @@ fn get_area_perimeter_num_sides(
             if is_valid(farm, point_) && farm[point_.0][point_.1] == type_ {
                 num_connections_x2 += 1;
                 if !seen.contains(&point_) {
-                    num_corners += get_num_corners(&farm, point_);
+                    num_corners += get_num_corners(farm, point_);
                     seen.insert(point_);
                     stack.push(point_);
                 }

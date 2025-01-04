@@ -2,10 +2,10 @@ use crate::adventofcode::AdventOfCode;
 
 pub struct Day;
 
-const X: u8 = 'X' as u8;
-const M: u8 = 'M' as u8;
-const A: u8 = 'A' as u8;
-const S: u8 = 'S' as u8;
+const X: u8 = b'X';
+const M: u8 = b'M';
+const A: u8 = b'A';
+const S: u8 = b'S';
 const XMAS: [u8; 4] = [X, M, A, S];
 
 struct Board {
@@ -30,7 +30,7 @@ fn count_xmas(board: &Board) -> usize {
         if board.at(r, c) != XMAS[0] {
             continue;
         }
-        for (dr, dc) in itertools::iproduct!(-1..2 as isize, -1..2 as isize) {
+        for (dr, dc) in itertools::iproduct!(-1..2_isize, -1..2_isize) {
             if (dr, dc) == (0, 0) {
                 continue;
             }
@@ -47,7 +47,7 @@ fn count_xmas(board: &Board) -> usize {
 }
 
 fn is_mas(board: &Board, r: usize, c: usize, dr: isize, dc: isize) -> bool {
-    return (1..4).all(|i| {
+    (1..4).all(|i| {
         let r_next: usize = (r as isize - dr * (i - 2)) as usize;
         let c_next: usize = (c as isize - dc * (i - 2)) as usize;
         board.is_valid(r_next, c_next) && board.at(r_next, c_next) == XMAS[i as usize]
@@ -55,7 +55,7 @@ fn is_mas(board: &Board, r: usize, c: usize, dr: isize, dc: isize) -> bool {
         let r_next: usize = (r as isize + dr * (i - 2)) as usize;
         let c_next: usize = (c as isize + dc * (i - 2)) as usize;
         board.is_valid(r_next, c_next) && board.at(r_next, c_next) == XMAS[i as usize]
-    });
+    })
 }
 
 // Part 2
@@ -65,7 +65,7 @@ fn count_x_mas(board: &Board) -> usize {
         if board.at(r, c) != A {
             continue;
         }
-        for (dr, dc) in itertools::iproduct!(0..2 as isize, 0..2 as isize) {
+        for (dr, dc) in itertools::iproduct!(0..2_isize, 0..2_isize) {
             if dr == 0 || dc == 0 {
                 continue;
             }
@@ -83,9 +83,9 @@ impl AdventOfCode for Day {
         let board: Vec<u8> = rows.into_iter().flat_map(|row| row.into_bytes()).collect();
         assert_eq!(board.len(), num_rows * num_cols);
         let board = Board {
-            board: board,
-            num_rows: num_rows,
-            num_cols: num_cols,
+            board,
+            num_rows,
+            num_cols,
         };
 
         let count: usize = count_xmas(&board);

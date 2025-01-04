@@ -183,9 +183,9 @@ impl AdventOfCode for Day {
                 Direction::Up | Direction::Down => {
                     if board[i_][j_] == L2B || board[i_][j_] == R2B {
                         if try_move_2b_ud(&mut board, i_, j_, dir) {
-                            return (i_, j_);
+                            (i_, j_)
                         } else {
-                            return (i, j);
+                            (i, j)
                         }
                     } else if board[i_][j_] == EMPTY {
                         return (i_, j_);
@@ -196,9 +196,9 @@ impl AdventOfCode for Day {
                 Direction::Left | Direction::Right => {
                     if board[i_][j_] == L2B || board[i_][j_] == R2B {
                         if try_move_2b_lr(&mut board, i_, j_, dir) {
-                            return (i_, j_);
+                            (i_, j_)
                         } else {
-                            return (i, j);
+                            (i, j)
                         }
                     } else if board[i_][j_] == EMPTY {
                         return (i_, j_);
@@ -210,7 +210,7 @@ impl AdventOfCode for Day {
         });
         let gps_coordinate_sum = itertools::iproduct!(0..board.len(), 0..board[0].len())
             .filter(|&(i, j)| board[i][j] == L2B)
-            .map(|(i, j)| (100 * i + j) as usize)
+            .map(|(i, j)| (100 * i + j))
             .sum::<usize>();
         println!("{}", gps_coordinate_sum);
 

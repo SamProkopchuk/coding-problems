@@ -54,7 +54,7 @@ impl AdventOfCode for Day {
             let mut temp_free_index: usize = min_free_index;
             let mut free_size: usize = (temp_free_index..i).take_while(|&j| disk[j] == -1).count();
             while free_size < block_size {
-                temp_free_index = temp_free_index + free_size;
+                temp_free_index += free_size;
                 if temp_free_index >= i {
                     break;
                 }

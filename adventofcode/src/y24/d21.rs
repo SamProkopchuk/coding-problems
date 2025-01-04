@@ -75,7 +75,7 @@ fn get_min_num_directional_instructions(
             next_position.1 as isize - current_position.1 as isize,
         );
         let mut commands: Vec<Vec<char>> = Vec::new();
-        for delta_pair_pair in vec![((dr, 0), (0, dc)), ((0, dc), (dr, 0))] {
+        for delta_pair_pair in [((dr, 0), (0, dc)), ((0, dc), (dr, 0))] {
             let d1 = delta_pair_pair.0;
             let d2 = delta_pair_pair.1;
             let next_position: Position = (
@@ -89,7 +89,6 @@ fn get_min_num_directional_instructions(
                 get_directional_commands(d1)
                     .into_iter()
                     .chain(get_directional_commands(d2))
-                    .into_iter()
                     .chain(std::iter::once('A'))
                     .collect(),
             );
@@ -117,7 +116,7 @@ fn get_min_num_instructions(target_instructions: &Vec<char>, depth: usize) -> Nu
             next_position.1 as isize - current_position.1 as isize,
         );
         let mut commands: Vec<Vec<char>> = Vec::new();
-        for delta_pair_pair in vec![((dr, 0), (0, dc)), ((0, dc), (dr, 0))] {
+        for delta_pair_pair in [((dr, 0), (0, dc)), ((0, dc), (dr, 0))] {
             let d1 = delta_pair_pair.0;
             let d2 = delta_pair_pair.1;
             let next_position: Position = (
@@ -131,7 +130,6 @@ fn get_min_num_instructions(target_instructions: &Vec<char>, depth: usize) -> Nu
                 get_directional_commands(d1)
                     .into_iter()
                     .chain(get_directional_commands(d2))
-                    .into_iter()
                     .chain(std::iter::once('A'))
                     .collect(),
             );

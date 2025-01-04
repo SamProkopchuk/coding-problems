@@ -21,7 +21,7 @@ impl AdventOfCode for Day {
                     it.next().unwrap().parse::<usize>().unwrap(),
                 )
             };
-            comes_after.entry(x).or_insert(HashSet::new()).insert(y);
+            comes_after.entry(x).or_default().insert(y);
             i += 1;
         }
         let mut count_1: usize = 0;
@@ -38,7 +38,7 @@ impl AdventOfCode for Day {
             for num in &nums {
                 if seen
                     .iter()
-                    .any(|&x| comes_after.get(&num).unwrap().contains(&x))
+                    .any(|&x| comes_after.get(num).unwrap().contains(&x))
                 {
                     is_valid = false;
                     break;

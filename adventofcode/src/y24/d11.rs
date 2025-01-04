@@ -15,15 +15,15 @@ fn num_digits(n: u128) -> u32 {
 fn split_digits(n: u128) -> (u128, u128) {
     let digits: String = n.to_string();
     assert!(digits.len() % 2 == 0);
-    return (
+    (
         digits[..digits.len() / 2].parse::<u128>().unwrap(),
         digits[digits.len() / 2..].parse::<u128>().unwrap(),
-    );
+    )
 }
 
 fn update_cache(cache: &mut HashMap<StoneDay, usize>, stone: u128, day: u32) -> usize {
     if let Some(&val) = cache.get(&(stone, day)) {
-        return val;
+        val
     } else if day == 0 {
         cache.insert((stone, day), 1);
         return 1;
@@ -47,7 +47,6 @@ fn update_cache(cache: &mut HashMap<StoneDay, usize>, stone: u128, day: u32) -> 
 impl AdventOfCode for Day {
     fn solve() -> anyhow::Result<()> {
         let stones: Vec<u128> = Day::input_raw(2024, 11)?
-            .trim()
             .split_whitespace()
             .map(|x| x.parse::<u128>().unwrap())
             .collect();

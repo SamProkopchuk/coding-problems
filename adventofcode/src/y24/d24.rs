@@ -7,8 +7,8 @@ use rand::SeedableRng;
 
 // The solution for p2 is slow and unoptimized.
 // Essentially brute-forcing the solution by swapping pairs and checking if the solution improves.
-// Could also update "simulate" to operate on a batch of x,y pairs.
-// Takes ~5s with --release
+// Takes ~5s with --release. Things could be optimized; eg:
+// Could also update "simulate" function to operate on a batch of x,y pairs.
 pub struct Day;
 
 #[derive(Debug, Hash, Eq, PartialEq, Copy, Clone)]

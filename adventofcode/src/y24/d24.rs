@@ -2,6 +2,11 @@ use crate::adventofcode::AdventOfCode;
 
 use std::collections::{HashMap, HashSet};
 
+use itertools::Itertools;
+use rand::rngs::StdRng;
+use rand::Rng;
+use rand::SeedableRng;
+
 pub struct Day;
 
 #[derive(Debug, Hash, Eq, PartialEq, Copy, Clone)]
@@ -44,7 +49,7 @@ const fn index_to_char(index: Index) -> char {
         0..=9 => (index + '0' as Index) as u8 as char,
         10..=35 => ((index - 10) + 'a' as Index) as u8 as char,
         _ => panic!("Invalid index"),
-   }
+    }
 }
 
 const Z_MIN: Index = char_to_index('z') * 36 * 36;
@@ -65,10 +70,30 @@ fn index_to_wire(index: Index) -> String {
         .collect()
 }
 
+fn get_x_y_z_indices() -> (Vec<Index>, Vec<Index>, Vec<Index>) {
+    let mut x_indices: Vec<Index> = Vec::new();
+    let mut y_indices: Vec<Index> = Vec::new();
+    let mut z_indices: Vec<Index> = Vec::new();
+    for i in 0..=44 {
+        let xi = format!("x{:02}", i);
+        let yi = format!("y{:02}", i);
+        let zi = format!("z{:02}", i);
+        x_indices.push(wire_to_index(&xi));
+        y_indices.push(wire_to_index(&yi));
+        z_indices.push(wire_to_index(&zi));
+    }
+    let zi = format!("z{:02}", 45);
+    z_indices.push(wire_to_index(&zi));
+    (x_indices, y_indices, z_indices)
+}
+
 fn simulate(
     x: u64,
     y: u64,
     circuits: &HashMap<(Index, Op, Index), HashSet<Index>>,
+    x_indices: &Vec<Index>,
+    y_indices: &Vec<Index>,
+    z_indices: &Vec<Index>,
 ) -> (
     u64,
     std::time::Duration,
@@ -77,10 +102,10 @@ fn simulate(
 ) {
     let now = std::time::SystemTime::now();
     let (mut x, mut y) = (x, y);
+    // let mut resolved_wires: Vec<i8> = vec![-1; Index::MAX as usize];
     let mut unresolved_wires: HashSet<Index> = HashSet::new();
     let mut wire_values: Vec<i8> = (0..=44).fold(vec![-1; Index::MAX as usize], |mut acc, i| {
-        let (xi, yi) = (format!("x{:02}", i), format!("y{:02}", i));
-        let (xi, yi) = (wire_to_index(&xi), wire_to_index(&yi));
+        let (xi, yi) = (x_indices[i], y_indices[i]);
         acc[xi as usize] = (x & 1 == 1) as i8;
         acc[yi as usize] = (y & 1 == 1) as i8;
         unresolved_wires.insert(xi);
@@ -103,6 +128,7 @@ fn simulate(
     while !unresolved_wires.is_empty() {
         let mut to_add: Vec<Index> = Vec::new();
         let mut to_remove: Vec<Index> = Vec::new();
+        let mut changed: bool = false;
         for wire in unresolved_wires.iter() {
             if input_pairs_adj
                 .get(wire)
@@ -130,9 +156,19 @@ fn simulate(
         }
         for wire in to_add {
             unresolved_wires.insert(wire);
+            changed = true;
         }
         for wire in to_remove {
             unresolved_wires.remove(&wire);
+            changed = true;
+        }
+        if !changed {
+            return (
+                0,
+                setup_time,
+                now.elapsed().unwrap(),
+                std::time::Duration::new(0, 0),
+            );
         }
     }
     let compute_time = now.elapsed().unwrap();
@@ -140,8 +176,7 @@ fn simulate(
     let now = std::time::SystemTime::now();
     let res = (0..=45)
         .scan((0, 1), |(acc, mul), i| {
-            let zi = format!("z{:02}", i);
-            let value = wire_values[wire_to_index(&zi) as usize];
+            let value = wire_values[z_indices[i] as usize];
             if value != -1 {
                 *acc += (value as u64) * *mul;
                 *mul *= 2;
@@ -204,7 +239,8 @@ impl AdventOfCode for Day {
                 acc.entry(inputs).or_default().insert(output);
                 acc
             });
-        let (z, _, _, _) = simulate(x, y, &circuits);
+        let (x_indices, y_indices, z_indices) = get_x_y_z_indices();
+        let (z, _, _, _) = simulate(x, y, &circuits, &x_indices, &y_indices, &z_indices);
         println!("{:?}", z);
         let (mut acc_setup_time, mut acc_compute_time, mut acc_final_time): (
             std::time::Duration,
@@ -215,22 +251,95 @@ impl AdventOfCode for Day {
             std::time::Duration::new(0, 0),
             std::time::Duration::new(0, 0),
         );
-        for i in 0..=44 {
-            let mask: u64 = 1 << i;
-            for (x, y) in [(0, 0), (0, mask), (mask, 0), (mask, mask)].iter() {
-                let (z, setup_time, compute_time, final_time) = simulate(*x, *y, &circuits);
-                acc_setup_time += setup_time;
-                acc_compute_time += compute_time;
-                acc_final_time += final_time;
-                let expected_mask = x + y;
-                if z & expected_mask != expected_mask {
-                    println!("Failed z bit: {}", i);
-                    println!("x: {:045b}", x);
-                    println!("y: {:045b}", y);
-                    println!("z: {:045b}", z);
+        let circuit_items: Vec<((Index, Op, Index), Index)> = circuits
+            .iter()
+            .fold(Vec::new(), |mut acc, (inputs, outputs)| {
+                for output in outputs {
+                    acc.push((*inputs, *output));
                 }
+                acc
+            })
+            .into_iter()
+            .sorted_by_key(|((x1, _op, x2), output)| (*output, *x1, *x2))
+            .collect();
+        let mut rng = StdRng::seed_from_u64(69);
+        const ALL_ONES: u64 = (1 << 45) - 1;
+        let test_cases: Vec<(u64, u64)> = (0..4)
+            .map(|_| {
+                let x: u64 = rng.gen::<u64>() & ALL_ONES;
+                let y: u64 = rng.gen::<u64>() & ALL_ONES;
+                (x, y)
+            })
+            .chain([(ALL_ONES, 1), (1, ALL_ONES)].iter().cloned())
+            .collect();
+        let mut swap_pairs: Vec<(usize, usize)> = Vec::new();
+        let mut zs: Vec<u64> = Vec::new();
+        let mut num_matched: u32 = {
+            test_cases
+                .iter()
+                .map(|(x, y)| {
+                    let z = simulate(*x, *y, &circuits, &x_indices, &y_indices, &z_indices).0;
+                    zs.push(z);
+                    ((x + y) ^ z).trailing_zeros()
+                })
+                .min()
+                .unwrap()
+        };
+        println!("{:?}", num_matched);
+        let mut circuit_items = circuit_items;
+        for _ in 0..4 {
+            for (i, j) in (0..circuit_items.len())
+                .combinations(2)
+                .map(|v| (v[0], v[1]))
+            {
+                let temp = circuit_items[i].1;
+                circuit_items[i].1 = circuit_items[j].1;
+                circuit_items[j].1 = temp;
+                let circuits: HashMap<(Index, Op, Index), HashSet<Index>> =
+                    circuit_items.iter().fold(
+                        HashMap::new(),
+                        |mut acc, ((inputs, op, output), output_)| {
+                            acc.entry((*inputs, *op, *output))
+                                .or_default()
+                                .insert(*output_);
+                            acc
+                        },
+                    );
+                let mut num_matched_: u32 = u32::MAX;
+                let mut new_zs: Vec<u64> = Vec::new();
+                let mut good = true;
+                for (x, y) in test_cases.iter() {
+                    let (z, setup_time, compute_time, final_time) =
+                        simulate(*x, *y, &circuits, &x_indices, &y_indices, &z_indices);
+                    new_zs.push(z);
+                    acc_setup_time += setup_time;
+                    acc_compute_time += compute_time;
+                    acc_final_time += final_time;
+                    let trailing_zeros: u32 = (z ^ (*x + *y)).trailing_zeros();
+                    num_matched_ = num_matched_.min(trailing_zeros);
+                    if trailing_zeros < num_matched {
+                        good = false;
+                    }
+                }
+                if itertools::izip!(test_cases.iter(), zs.iter(), new_zs.iter()).all(
+                        |((x, y), z, z_)| {
+                            ((x + y) ^ *z).count_ones() > ((x + y) ^ *z_).count_ones()
+                        },
+                    )
+                {
+                    num_matched = num_matched_;
+                    zs = new_zs;
+                    println!("Swapped: {:?} {:?}", i, j);
+                    println!("{:?}", num_matched);
+                    swap_pairs.push((i, j));
+                    break;
+                }
+                let temp = circuit_items[i].1;
+                circuit_items[i].1 = circuit_items[j].1;
+                circuit_items[j].1 = temp;
             }
         }
+        println!("Num matched: {:?}", num_matched);
         println!("Setup time: {:?}", acc_setup_time);
         println!("Compute time: {:?}", acc_compute_time);
         println!("Final time: {:?}", acc_final_time);

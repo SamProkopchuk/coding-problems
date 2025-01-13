@@ -53,9 +53,8 @@ vector<int> get_suffix_array(string s, const int alphabet_size = 256) {
     cn[p[0]] = 0;
     classid = 0;
     for (int i = 1; i < n; i++) {
-      pair<int, int> cur = pair<int, int>{c[p[i]], c[(p[i] + shift) % n]};
-      pair<int, int> prev =
-          pair<int, int>{c[p[i - 1]], c[(p[i - 1] + shift) % n]};
+      pair<int, int> cur = {c[p[i]], c[(p[i] + shift) % n]};
+      pair<int, int> prev = {c[p[i - 1]], c[(p[i - 1] + shift) % n]};
       if (cur != prev)
         ++classid;
       cn[p[i]] = classid;

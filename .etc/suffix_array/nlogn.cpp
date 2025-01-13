@@ -47,7 +47,8 @@ vector<int> get_suffix_array(string s, const int alphabet_size = 256) {
     }
     fill(cnt.begin(), cnt.begin() + classid, 0);
     for_each(pn.cbegin(), pn.cend(), [&](const int &x) { ++cnt[c[x]]; });
-    inclusive_scan(cnt.cbegin(), cnt.cbegin() + classid, cnt.begin());
+    const int num_classes = classid + 1;
+    inclusive_scan(cnt.cbegin(), cnt.cbegin() + num_classes, cnt.begin());
     for_each(p.crbegin(), p.crend(),
              [&](const int &x) { pn[--cnt[c[x]]] = x; });
     cn[p[0]] = 0;
